@@ -9,8 +9,19 @@ from inputimeout import inputimeout, TimeoutOccurred
 #
 #########################
 
-#get some of the required parameters so i can automate this shit
-country_codes = [('Singapore','SG'), ('Malaysia','MY'), ('United States','US'), ('United Kingdom','UK'), ('India','IN'), ('Australia','AU'), ('New Zealand', 'NZ'), ('South Africa', 'ZA'), ('Indonesia', 'ID')]
+
+#get the countrycodes from countries.txt
+country_codes = []
+with open('countries.txt') as f1:
+    for line in f1:
+        #i added a neat weay to exclude a line(country) by just adding a # infront of itwithout deleteing the line
+        if line[0] == '#': #if the first character is that, skp that conutiy
+            continue
+        else:
+            data = line.strip().split(',')
+            country_codes.append(data)
+            
+
 date = str(datetime.date.today()) #todays date, is my path to folder too
 
 #to check if the date folder exist, if its not, let me input it
@@ -34,7 +45,14 @@ for country in country_codes:
     if prompt.lower() == 'y':
         #check if its already been done, if it has, skip
         if os.path.exists(f'{date}/{country[0]}_{date}.json'):
+            print('Video has already been uploaded!')
             continue
+
+        #check if the video even exist
+        elif os.path.exists(f'{date}/videos/{country[0]}_{date}_video.mp4') == False:
+            print('Video does not exist, skipping...')
+            continue
+        
         else:
             filepath = f'{date}/videos/{country[0]}_{date}_video.mp4'
             title = f'{country[0]} {date} -- 1 Minute News'
